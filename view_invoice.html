@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #{{ invoice.invoice_number }} - Kapila POS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">Kapila POS</a>
+            <a href="{{ url_for('invoice_list') }}" class="btn btn-outline-light ms-auto">← Back to Invoices</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Invoice Header -->
+                <div class="card border-0 shadow">
+                    <div class="card-body text-center p-4 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h1 class="display-5 mb-1">INVOICE</h1>
+                        <h4 class="mb-0">{{ invoice.invoice_number }}</h4>
+                        <small>{{ invoice.invoice_date }} {{ invoice.invoice_time }}</small>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-3">
+                    <!-- Business Info -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0"><i class="bi bi-building"></i> From</h6>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="fw-bold">{{ settings.business_name }}</h5>
+                                <p class="mb-1">{{ settings.address }}</p>
+                                <p class="mb-1"><i class="bi bi-telephone"></i> {{ settings.phone }}</p>
+                                <p class="mb-0"><i class="bi bi-envelope"></i> {{ settings.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Info -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0"><i class="bi bi-person"></i> Bill To</h6>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-2">{{ invoice.customer_name.upper() }}</h6>
+                                {% if invoice.customer_phone %}
+                                    <p class="mb-1"><i class="bi bi-telephone"></i> {{ invoice.customer_phone }}</p>
+                                {% endif %}
+                                {% if invoice.customer_email %}
+                                    <p class="mb-1"><i class="bi bi-envelope"></i> {{ invoice.customer_email }}</p>
+                                {% endif %}
+                                {% if invoice.customer_address %}
+                                    <p class="mb-0">{{ invoice.customer_address }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items Table -->
+                <div class="card mt-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="bi bi-receipt"></i> Order Items</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Item</th>
+                                        <th width="100">Qty</th>
+                                        <th width="120">Rate</th>
+                                        <th width="120">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                    <tr>
+                                        <td>{{ item.item_name }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>₹{{ "%.2f"|format(item.unit_price) }}</td>
+                                        <td>₹{{ "%.2f"|format(item.amount) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <th colspan="3" class="text-end">Subtotal:</th>
+                                        <th class="fw-bold">₹{{ "%.2f"|format(invoice.subtotal) }}</th>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <th colspan="3" class="text-end fw-bold fs-5">TOTAL:</th>
+                                        <th class="fw-bold fs-4 text-success">₹{{ "%.2f"|format(invoice.total) }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment & Footer -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center p-4 bg-success text-white">
+                                <i class="bi bi-check-circle-fill fs-1 mb-2"></i>
+                                <h5>FULL PAYMENT RECEIVED</h5>
+                                <p class="mb-0">Payment Mode: {{ invoice.payment_mode }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6>Terms & Conditions</h6>
+                                <ul class="small">
+                                    <li>All food items freshly prepared</li>
+                                    <li>Payment due at delivery</li>
+                                    <li>GST as applicable</li>
+                                </ul>
+                                <hr>
+                                <p class="small mb-0 text-muted">
+                                    <strong>System Generated</strong><br>
+                                    {{ settings.footer_message }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="fixed-bottom bg-white border-top p-3 shadow-sm">
+        <div class="container">
+            <div class="row g-2">
+                <div class="col">
+                    <a href="{{ url_for('download_pdf', invoice_id=invoice.id) }}" class="btn btn-primary w-100">
+                        <i class="bi bi-download"></i> PDF
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="{{ url_for('email_invoice', invoice_id=invoice.id) }}" class="btn btn-info w-100">
+                        <i class="bi bi-envelope"></i> Email
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="{{ url_for('whatsapp_invoice', invoice_id=invoice.id) }}" class="btn btn-success w-100">
+                        <i class="bi bi-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+                <div class="col">
+                    <form method="POST" action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}" style="display: inline;" onsubmit="return confirm('Delete invoice {{ invoice.invoice_number }}? This cannot be undone.');">
+                        <button type="submit" class="btn btn-danger w-100">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

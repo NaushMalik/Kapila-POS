@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}New Invoice - Kapila POS{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- LEFT SIDE -->
+        <div class="col-lg-12">
+            <div class="card p-3 mb-4">
+                <div class="text-end">
+                    <button class="btn btn-success" onclick="saveInvoice()">Create Invoice</button>
+                </div>
+            </div>
+            <h3 class="mb-3">New Invoice</h3>
+            <div class="card p-3">
+                <h5>Quick Products</h5>
+
+                {% for product in products %}
+                <button type="button" onclick="quickAdd('{{ product.id }}', '{{ product.name }}', {{ product.price }})" class="btn btn-outline-primary w-100 mb-2">
+                    {{ product.name }} - ₹{{ product.price }}
+                </button>
+                {% endfor %}
+            </div>
+
+            <!-- Customer -->
+            <div class="card p-3 mb-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Customer Name</label>
+                        <input class="form-control" id="customer" name="customer">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Phone</label>
+                        <input class="form-control" id="phone" name="phone">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Payment Mode</label>
+                        <select class="form-select" id="payment_mode">
+                            <option>Cash</option>
+                            <option>UPI</option>
+                            <option>Card</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Items -->
+            <div class="card p-3">
+                <h5>Items</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody"></tbody>
+                </table>
+                <select name="product" onchange="updatePrice(this)">
+                    {% for product in products %}
+                    <option value="{{ product.id }}" data-price="{{ product.price }}">
+                        {{ product.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <input type="number" id="selectedQty" value="1" min="1" class="form-control d-inline w-auto me-2" style="width:80px;">
+                <button class="btn btn-primary" onclick="addSelectedItem()">+ Add Item</button>
+
+
+                <div class="text-end mt-3">
+                    <h5>Subtotal: ₹<span id="subtotal">0</span></h5>
+                    <h4>Grand Total: ₹<span id="grandtotal">0</span></h4>
+                </div>
+                <div class="mt-3 text-end">
+                    <button class="btn btn-success" onclick="saveInvoice()">Create Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    let invoiceItems = [];
+    
+    function quickAdd(id, name, price) {
+        let qty = prompt(`Add ${name} (₹${price}): Enter quantity:`);
+        if (qty && parseInt(qty) > 0) {
+            let row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${name}</td>
+                <td><input type="number" value="${qty}" onchange="calculateTotals()" min="1"></td>
+                <td>${price}</td>
+                <td class="rowTotal">${parseFloat(qty) * parseFloat(price)}</td>
+                <td><button onclick="this.parentElement.parentElement.remove(); calculateTotals()" class="btn btn-sm btn-danger">X</button></td>
+            `;
+            document.getElementById('itemsBody').appendChild(row);
+            calculateTotals();
+        }
+    }
+    
+    function updatePrice(select) {
+        let selectedPrice = select.options[select.selectedIndex].dataset.price;
+        // Could add price display here
+        console.log('Selected price:', selectedPrice);
+    }
+
+    
+    function addSelectedItem() {
+        let select = document.querySelector('select[name="product"]');
+        let option = select.options[select.selectedIndex];
+        let id = option.value;
+        let name = option.text;
+        let price = option.dataset.price;
+        let qty = document.getElementById('selectedQty').value;
+        addItemToTable(name, parseFloat(price), parseInt(qty));
+    }
+    
+    function addItemToTable(name, price, qty) {
+        let row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${name}</td>
+            <td><input type="number" value="${qty}" onchange="calculateTotals()" min="1"></td>
+            <td>${price.toFixed(2)}</td>
+            <td class="rowTotal">${(qty * price).toFixed(2)}</td>
+            <td><button onclick="this.parentElement.parentElement.remove(); calculateTotals()" class="btn btn-sm btn-danger">X</button></td>
+        `;
+        document.getElementById('itemsBody').appendChild(row);
+        calculateTotals();
+    }
+
+    
+    function calculateTotals() {
+        let total = 0;
+        document.querySelectorAll('#itemsBody tr').forEach(row => {
+            let qtyInput = row.querySelector('input[type="number"]');
+            let qty = parseFloat(qtyInput.value) || 1;
+            let price = parseFloat(row.cells[2].textContent) || 0;
+            let rowTotal = qty * price;
+            row.cells[3].textContent = rowTotal.toFixed(2);
+            total += rowTotal;
+        });
+        document.getElementById('subtotal').textContent = total.toFixed(2);
+        document.getElementById('grandtotal').textContent = total.toFixed(2);
+    }
+    
+    function addRow() {
+
+        let select = prompt("Enter product name:");
+        let qty = prompt("Enter quantity:");
+        let price = prompt("Enter price:");
+        if (select && qty && price) {
+            let row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${select}</td>
+                <td><input type="number" value="${qty}" onchange="calculate()" min="1"></td>
+                <td>${price}</td>
+                <td class="rowTotal">${parseFloat(qty) * parseFloat(price)}</td>
+                <td><button onclick="this.parentElement.parentElement.remove(); calculate()" class="btn btn-sm btn-danger">X</button></td>
+            `;
+            document.getElementById('itemsBody').appendChild(row);
+            calculate();
+        }
+    }
+    function calculate() {
+        let total = 0;
+        document.querySelectorAll('#itemsBody tr').forEach(row => {
+            let qty = parseFloat(row.querySelector('input').value) || 1;
+            let price = parseFloat(row.cells[2].innerText) || 0;
+            let rowTotal = qty * price;
+            row.cells[3].innerText = rowTotal.toFixed(2);
+            total += rowTotal;
+        });
+        document.getElementById('subtotal').innerText = total.toFixed(2);
+        document.getElementById('grandtotal').innerText = total.toFixed(2);
+    }
+    function saveInvoice() {
+        let customer = document.getElementById('customer').value;
+        if (!customer || document.querySelectorAll('#itemsBody tr').length === 0) {
+            alert('Add customer and items first');
+            return;
+        }
+        alert('Invoice created successfully!');
+    }
+</script>
+{% endblock %}
+
