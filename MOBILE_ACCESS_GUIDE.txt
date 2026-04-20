@@ -1,0 +1,38 @@
+# KAPILA INVOICE - MOBILE ACCESS GUIDE
+
+## EASIEST WAY - Just 2 Steps:
+
+### Step 1: Open a new terminal/command prompt
+Go to your KapilaInvoice folder and run:
+```
+python app.py
+```
+Keep this window open!
+
+### Step 2: Open ANOTHER new terminal/command prompt
+Go to your KapilaInvoice folder and run:
+```
+npx localtunnel --port 5001
+```
+
+### Step 3: Use the URL!
+- You will see a URL like: `https://something.loca.lt`
+- Open that URL on your mobile phone
+- That's it! You're done!
+
+## LOGIN CREDENTIALS:
+- Username: admin
+- Password: admin123
+
+## NOTE:
+- Every time you restart, you get a NEW URL
+- Keep your laptop on and connected to internet
+- The URL works on 4G/5G too - not just your WiFi!
+
+## ALTERNATIVE - Using ngrok (permanent URL):
+1. Sign up at https://ngrok.com
+2. Get your auth token
+3. Run: `ngrok authtoken YOUR_TOKEN`
+4. Run: `ngrok http 5001`
+5. You'll get a permanent URL!
+

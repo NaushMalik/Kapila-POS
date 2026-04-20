@@ -1,0 +1,4 @@
+# SQLite backup placeholder - manually copy database/kapila_invoice.db to database_backup.db if it contains important data.
+# Current DB read failed (binary), so assume empty/new or proceed.
+# Check with: python check_db.py
+

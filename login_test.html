@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapila Invoice - Login (Standalone Test)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3fa8, #17327f);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: #fff;
+            border-radius: 14px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .login-header h1 {
+            font-size: 24px;
+            color: #2b2b2b;
+            margin-bottom: 5px;
+        }
+        
+        .login-header p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #2b2b2b;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #1e3fa8;
+            box-shadow: 0 0 0 3px rgba(30, 63, 168, 0.1);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: #1e3fa8;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: #17327f;
+            transform: translateY(-1px);
+        }
+        
+        .alert {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-success {
+            background: rgba(30, 143, 79, 0.1);
+            color: #1e8f4f;
+            border: 1px solid rgba(30, 143, 79, 0.2);
+        }
+        
+        .alert-danger {
+            background: rgba(192, 57, 43, 0.1);
+            color: #c0392b;
+            border: 1px solid rgba(192, 57, 43, 0.2);
+        }
+        
+        .text-center { text-align: center; }
+        .mt-3 { margin-top: 15px; }
+        
+        .quick-info {
+            background: #f2efe9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .quick-info h4 {
+            color: #1e3fa8;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .quick-info p {
+            color: #6c757d;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .quick-info code {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="logo">🌯</div>
+                <h1>KAPILA INVOICE</h1>
+                <p>Restaurant Invoice Management System</p>
+            </div>
+            
+            <div id="messageArea"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username" value="admin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" value="admin123" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="quick-info">
+                <h4><i class="fas fa-info-circle"></i> Quick Info</h4>
+                <p>This is a <strong>standalone demo</strong> of the login page.</p>
+                <p>To use the full app:</p>
+                <p>1. Open terminal in <code>KapilaInvoice</code> folder</p>
+                <p>2. Run: <code>python app.py</code></p>
+                <p>3. Open browser to: <code>http://localhost:5000</code></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simulate login check
+            if (username === 'admin' && password === 'admin123') {
+                showMessage('Login successful! Now starting Flask server...', 'success');
+                
+                setTimeout(() => {
+                    showMessage('Please run: python app.py in KapilaInvoice folder', 'danger');
+                }, 1500);
+            } else {
+                showMessage('Invalid credentials. Use admin/admin123', 'danger');
+            }
+        });
+        
+        function showMessage(text, type) {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = '<div class="alert alert-' + type + '"><i class="fas fa-info-circle"></i>' + text + '</div>';
+        }
+    </script>
+</body>
+</html>

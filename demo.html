@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapila Invoice - Full Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables */
+        :root {
+            --primary-color: #1e3fa8;
+            --primary-dark: #17327f;
+            --secondary-color: #e1b12c;
+            --success-color: #1e8f4f;
+            --danger-color: #c0392b;
+            --light-bg: #f2efe9;
+            --card-bg: #f7f4ef;
+            --text-primary: #2b2b2b;
+            --text-secondary: #6c757d;
+            --border-color: #ddd;
+            --shadow: 0 2px 6px rgba(0,0,0,0.06);
+            --radius: 14px;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Layout */
+        .wrapper { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: #fff;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .logo { font-size: 32px; }
+        
+        .nav-section { margin-bottom: 20px; }
+        
+        .nav-section-title {
+            padding: 10px 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-left-color: var(--secondary-color);
+        }
+        
+        .nav-link i { font-size: 18px; width: 24px; }
+        
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; }
+        
+        .top-bar {
+            background: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .page-title { font-size: 20px; font-weight: 600; }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: var(--radius);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .content { padding: 30px; }
+        
+        /* Cards */
+        .card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .card-title { font-size: 18px; font-weight: 600; }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .stat-icon.blue { background: rgba(30, 63, 168, 0.1); color: var(--primary-color); }
+        .stat-icon.green { background: rgba(30, 143, 79, 0.1); color: var(--success-color); }
+        .stat-icon.yellow { background: rgba(225, 177, 44, 0.1); color: var(--secondary-color); }
+        .stat-icon.red { background: rgba(192, 57, 43, 0.1); color: var(--danger-color); }
+        
+        .stat-content h3 { font-size: 28px; font-weight: 700; }
+        .stat-content p { font-size: 14px; color: var(--text-secondary); }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary { background: var(--primary-color); color: #fff; }
+        .btn-secondary { background: var(--light-bg); color: var(--text-primary); }
+        .btn-sm { padding: 8px 16px; font-size: 13px; }
+        
+        .quick-actions { display: flex; gap: 12px; margin-bottom: 24px; }
+        
+        /* Tables */
+        .table-container { overflow-x: auto; }
+        
+        .table { width: 100%; border-collapse: collapse; }
+        
+        .table th, .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-transform: uppercase;
+            background: var(--light-bg);
+        }
+        
+        .table tbody tr:hover { background: var(--light-bg); }
+        
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-info { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+        .badge-success { background: rgba(30, 143, 79, 0.1); color: var(--success-color); }
+        
+        /* Quick Actions in Dashboard */
+        .action-buttons { display: flex; gap: 8px; }
+        
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
+            .sidebar { width: 0; transform: translateX(-100%); }
+            .sidebar.active { width: 260px; transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .content { padding: 20px; }
+        }
+        
+        /* Page sections */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <span class="logo">🌯</span>
+                    <span>KAPILA INVOICE</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main Menu</div>
+                    
+                    <a href="#" class="nav-link active" onclick="showPage('dashboard', this)">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <a href="#" class="nav-link" onclick="showPage('new-invoice', this)">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>New Invoice</span>
+                    </a>
+                    
+                    <a href="#" class="nav-link" onclick="showPage('invoices', this)">
+                        <i class="fas fa-list"></i>
+                        <span>Invoices</span>
+                    </a>
+                    
+                    <a href="#" class="nav-link" onclick="showPage('products', this)">
+                        <i class="fas fa-box"></i>
+                        <span>Products</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Management</div>
+                    
+                    <a href="#" class="nav-link" onclick="showPage('settings', this)">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Account</div>
+                    
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+                <div style="display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.7); font-size: 13px;">
+                    <i class="fas fa-user-circle"></i>
+                    <span>admin</span>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="btn btn-secondary btn-sm" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                
+                <div class="user-menu">
+                    <div class="user-avatar">A</div>
+                    <span>admin</span>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <div class="content">
+                <!-- Dashboard Page -->
+                <div id="dashboard" class="page-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue"><i class="fas fa-rupee-sign"></i></div>
+                            <div class="stat-content">
+                                <h3>₹45,230</h3>
+                                <p>Total Sales</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon green"><i class="fas fa-calendar-day"></i></div>
+                            <div class="stat-content">
+                                <h3>₹3,450</h3>
+                                <p>Today's Sales</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon yellow"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="stat-content">
+                                <h3>₹12,890</h3>
+                                <p>This Month</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon red"><i class="fas fa-file-invoice"></i></div>
+                            <div class="stat-content">
+                                <h3>156</h3>
+                                <p>Total Invoices</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="showPage('new-invoice', document.querySelectorAll('.nav-link')[1])">
+                            <i class="fas fa-plus"></i>
+                            New Invoice
+                        </button>
+                        <button class="btn btn-secondary" onclick="showPage('products', document.querySelectorAll('.nav-link')[3])">
+                            <i class="fas fa-box"></i>
+                            Manage Products
+                        </button>
+                        <button class="btn btn-secondary" onclick="showPage('settings', document.querySelectorAll('.nav-link')[5])">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Invoices</h3>
+                            <button class="btn btn-sm btn-secondary">View All</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice #</th>
+                                        <th>Customer</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>INV-20241215-0001</strong></td>
+                                        <td>Rajesh Kumar</td>
+                                        <td>2024-12-15</td>
+                                        <td><strong>₹450</strong></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-secondary"><i class="fas fa-download"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>INV-20241215-0002</strong></td>
+                                        <td>Priya Sharma</td>
+                                        <td>2024-12-15</td>
+                                        <td><strong>₹890</strong></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-secondary"><i class="fas fa-download"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>INV-20241214-0003</strong></td>
+                                        <td>Amit Patel</td>
+                                        <td>2024-12-14</td>
+                                        <td><strong>₹1,250</strong></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-secondary"><i class="fas fa-download"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- New Invoice Page -->
+                <div id="new-invoice" class="page-section">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;">Customer Details</h3>
+                        <div class="form-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                            <div class="form-group">
+                                <label class="form-label">Customer Name *</label>
+                                <input type="text" class="form-control" placeholder="Enter customer name">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" placeholder="+91 XXXXX XXXXX">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" placeholder="customer@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Payment Mode</label>
+                                <select class="form-control">
+                                    <option>Cash</option>
+                                    <option>UPI</option>
+                                    <option>Bank Transfer</option>
+                                    <option>Card</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;">Order Items</h3>
+                        <div style="background: var(--light-bg); padding: 40px; text-align: center; border-radius: 10px; margin-bottom: 20px;">
+                            <i class="fas fa-shopping-cart" style="font-size: 48px; color: var(--text-secondary); margin-bottom: 15px;"></i>
+                            <p style="color: var(--text-secondary);">No items added yet</p>
+                            <button class="btn btn-secondary" style="margin-top: 15px;">
+                                <i class="fas fa-plus"></i>
+                                Add Product
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px;">Bill Summary</h3>
+                        <div style="text-align: center; color: var(--text-secondary);">
+                            <p>No items in cart</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-primary" style="flex: 1;">
+                            <i class="fas fa-save"></i>
+                            Save Invoice
+                        </button>
+                        <button class="btn btn-secondary" style="flex: 1;">
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Invoices Page -->
+                <div id="invoices" class="page-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Invoices</h3>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                                New Invoice
+                            </button>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                            <input type="text" class="form-control" placeholder="Search invoices..." style="flex: 1;">
+                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice #</th>
+                                        <th>Customer</th>
+                                        <th>Date</th>
+                                        <th>Payment</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>INV-20241215-0001</td>
+                                        <td>Rajesh Kumar</td>
+                                        <td>2024-12-15</td>
+                                        <td><span class="badge badge-info">Cash</span></td>
+                                        <td><strong>₹450</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>INV-20241215-0002</td>
+                                        <td>Priya Sharma</td>
+                                        <td>2024-12-15</td>
+                                        <td><span class="badge badge-info">UPI</span></td>
+                                        <td><strong>₹890</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>INV-20241214-0003</td>
+                                        <td>Amit Patel</td>
+                                        <td>2024-12-14</td>
+                                        <td><span class="badge badge-info">Card</span></td>
+                                        <td><strong>₹1,250</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Products Page -->
+                <div id="products" class="page-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Products</h3>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                                Add Product
+                            </button>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                            <div style="background: var(--light-bg); padding: 15px; border-radius: 10px;">
+                                <div style="font-weight: 600; margin-bottom: 5px;">Chicken Kathi Roll (SF)</div>
+                                <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 5px;">Rolls</div>
+                                <div style="font-weight: 700; color: var(--primary-color);">₹90</div>
+                            </div>
+                            <div style="background: var(--light-bg); padding: 15px; border-radius: 10px;">
+                                <div style="font-weight: 600; margin-bottom: 5px;">Paneer Kathi Roll (SF)</div>
+                                <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 5px;">Rolls</div>
+                                <div style="font-weight: 700; color: var(--primary-color);">₹80</div>
+                            </div>
+                            <div style="background: var(--light-bg); padding: 15px; border-radius: 10px;">
+                                <div style="font-weight: 600; margin-bottom: 5px;">Chicken Biryani</div>
+                                <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 5px;">Biryani</div>
+                                <div style="font-weight: 700; color: var(--primary-color);">₹150</div>
+                            </div>
+                            <div style="background: var(--light-bg); padding: 15px; border-radius: 10px;">
+                                <div style="font-weight: 600; margin-bottom: 5px;">Chicken Fried Rice</div>
+                                <div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 5px;">Rice</div>
+                                <div style="font-weight: 700; color: var(--primary-color);">₹120</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Page -->
+                <div id="settings" class="page-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Business Settings</h3>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Business Name</label>
+                            <input type="text" class="form-control" value="Kapila Kathi Kebab">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" value="123 Restaurant Street, City">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="text" class="form-control" value="+91 9876543210">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="kapila@kebab.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">GST Number</label>
+                            <input type="text" class="form-control" placeholder="Enter GST number">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Invoice Footer Message</label>
+                            <input type="text" class="form-control" value="Thank you for your order!">
+                        </div>
+                        
+                        <button class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <footer style="text-align: center; padding: 20px; color: var(--text-secondary); font-size: 13px;">
+                &copy; 2024 Kapila Invoice Generator. All rights reserved.
+            </footer>
+        </main>
+    </div>
+    
+    <script>
+        function showPage(pageId, navElement) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            if (navElement) {
+                navElement.classList.add('active');
+            }
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'new-invoice': 'New Invoice',
+                'invoices': 'All Invoices',
+                'products': 'Product Management',
+                'settings': 'Settings'
+            };
+            document.getElementById('pageTitle').textContent = titles[pageId] || 'Dashboard';
+        }
+        
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Kapila Invoice Demo loaded successfully!');
+            console.log('Use the sidebar to navigate between pages.');
+        });
+    </script>
+</body>
+</html>
